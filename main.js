@@ -45,8 +45,6 @@ function createTd(text) {
 
 /* MAIN */
 
-var num_items_per_page = 5;
-var page_number = 1;
 var table_body = document.querySelector('tbody');
 var fragment = document.createDocumentFragment();
 
