@@ -2,6 +2,16 @@
  * Created by mayasc on 6/29/15.
  */
 
+
+/* Globals */
+
+var numItemsPerPage = 5;
+var pageNumber = 1;
+var numberOfItems = ITEMS.length;
+
+
+/* Functions */
+
 function handleLineChange(selectElement) {
     console.log(selectElement.getAttribute('trid'));
 
@@ -42,29 +52,43 @@ function createTd(text) {
     return new_td;
 }
 
+function createTable (items) {
+    var table_body = document.querySelector('tbody');
+    var fragment = document.createDocumentFragment();
+
+    items.forEach(function(item, index, array) {
+
+        var tr = document.createElement('tr');
+        tr.setAttribute('id', index.toString());
+
+        var td_select = getNumbersSelector(array.length, index);
+        tr.appendChild(td_select);
+
+        tr.appendChild(createTd(item.id));
+        tr.appendChild(createTd(item.name));
+        tr.appendChild(createTd(item.price));
+
+        fragment.appendChild(tr);
+
+        if (index === numItemsPerPage-1) {
+            table_body.appendChild(fragment);
+        }
+
+    });
+}
+
+function drawPageButtons() {
+    var pages_div = document.querySelector('.pages');
+    for (var i = 1 ; i < numberOfItems ; i = i+numItemsPerPage) {
+        var new_div = document.createElement('div');
+        new_div.setAttribute('class','page-number');
+        new_div.setAttribute('onClick','handlePageChange(this)');
+        new_div.textContent = i.toString();
+        pages_div.appendChild(new_div);
+    }
+}
 
 /* MAIN */
 
-var table_body = document.querySelector('tbody');
-var fragment = document.createDocumentFragment();
-
-ITEMS.forEach(function(item, index, array) {
-
-    var tr = document.createElement('tr');
-    tr.setAttribute('id', index.toString());
-
-    var td_select = getNumbersSelector(array.length, index);
-    tr.appendChild(td_select);
-
-    tr.appendChild(createTd(item.id));
-    tr.appendChild(createTd(item.name));
-    tr.appendChild(createTd(item.price));
-
-    fragment.appendChild(tr);
-
-    if (index === array.length -1) {
-        table_body.appendChild(fragment);
-    }
-
-});
-
+drawPageButtons();
+//createTable(ITEMS);

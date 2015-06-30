@@ -8,3 +8,13 @@ table, th, td {
     margin:auto;
     font-size: 20px;
 }
+
+.page-number {
+    margin-top: 50px;
+    border: 1px solid black;
+    display: inline-block;
+    height: 40px;
+    width: 40px;
+    background-color: antiquewhite;
+    vertical-align: middle;
+}
