@@ -9,12 +9,46 @@ table, th, td {
     font-size: 20px;
 }
 
+.pages {
+    display: table;
+    margin-top: 20px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
 .page-number {
-    margin-top: 50px;
     border: 1px solid black;
-    display: inline-block;
+    display: table-cell;
     height: 40px;
     width: 40px;
     background-color: antiquewhite;
     vertical-align: middle;
+}
+
+
+.clickable:hover {
+    background-color: beige;
+}
+
+.range {
+    width: 200px;
+}
+
+.cart-container {
+    border: 1px solid black;
+    display: table;
+    padding: 2px;
+}
+
+
+.cart.headline {
+    border: 1px solid black;
+    display: table-cell;
+    width: 200px;
+}
+
+.cart.item {
+    border: 1px solid black;
+    display: inline-block;
+    width: 200px;
 }

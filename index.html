@@ -14,6 +14,7 @@
     <td data-fields="id">Item ID</td>
     <td data-fields="name">Item Name</td>
     <td data-fields="price">Item Price</td>
+    <td data-fields="add-to-cart">Add To Cart</td>
 </tr>
 </thead>
 <tbody>
@@ -22,10 +23,26 @@
 </table>
 
 <div class="pages">
+    <div class="range page-number">
+        <label for="num-pages">
+            How Many Items Per Page?
+            <input type="number" id="num-pages" max="30" min="2"/>
+        </label>
+        <button>Change</button>
+    </div>
+</div>
 
+<div class="cart-container">
+    <div class="cart-headline">
+        <div class="cart headline">Id</div>
+        <div class="cart headline">Name</div>
+        <div class="cart headline">Price</div>
+        <div class="cart headline"></div>
+    </div>
 </div>
 
 <script type="text/javascript"  src="items.js"></script>
+<script type="text/javascript"  src="pubsub.js"></script>
 <script type="text/javascript"  src="main.js"></script>
 </body>
 </html>
