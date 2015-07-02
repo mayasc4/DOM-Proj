@@ -28,27 +28,36 @@ table, th, td {
 
 .clickable:hover {
     background-color: beige;
+    cursor: pointer;
 }
 
 .range {
     width: 200px;
 }
 
-.cart-container {
-    border: 1px solid black;
-    display: table;
-    padding: 2px;
+.invisible {
+    color: lightblue;
 }
 
-
-.cart.headline {
-    border: 1px solid black;
-    display: table-cell;
-    width: 200px;
-}
-
-.cart.item {
+.cart.headline, .cart.item {
     border: 1px solid black;
     display: inline-block;
     width: 200px;
+}
+
+.item-in-cart-container .remove:hover , .add:hover {
+    cursor: pointer;
+    background-color: aliceblue;
+}
+
+.sort-img {
+    width: 5%;
+    height: 5%;
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+
+.sort-img:hover {
+    cursor: pointer;
 }
