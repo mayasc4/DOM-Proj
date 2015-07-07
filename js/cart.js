@@ -16,7 +16,7 @@ function drawCart() {
         new_item.appendChild(createNewElement('div', 'cell', CART[item].quantity, {name: 'quantity'}));
 
         var remove_div = createNewElement('div', 'cell clickable', 'Remove', {'id': CART[item].id});
-        remove_div.addEventListener('click',function(){ publish('removeItem',CART[item].id) });
+        remove_div.addEventListener('click',function(){ publish('removeItem',CART[this].id)}.bind(item));
 
         new_item.appendChild(remove_div);
 
@@ -58,6 +58,7 @@ function addItemToCart(item_id) {
 /* Remove From Cart */
 
 function removeItemFromCart(item_id) {
+    console.log(item_id);
     for (var i = 0 ; i < CART.length ; i++) {
 
         if (CART[i].id == item_id) {

@@ -27,9 +27,8 @@ function drawNumbers() {
 
 
 function handlePageChange(page_index) {
-    PAGE_NUMBER = page_index-1;
-    removeSpecificElements('.table.items','.row');
-    createTable();
+    PAGE_NUMBER = page_index - 1;
+    reCreateTable();
 }
 
 
@@ -39,8 +38,7 @@ function handleNumItemsChange () {
     NUM_ITEMS_PER_PAGE = parseInt(newNumItems.value);
     PAGE_NUMBER = 0;
 
-    removeTable();
-    createTable();
+    reCreateTable();
     drawNumbers();
 }
 

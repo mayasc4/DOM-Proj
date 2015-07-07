@@ -44,8 +44,9 @@ function drawTable(items_to_draw) {
 
 }
 
-function createTable (items) {
-    items = items || ITEMS;
+function reCreateTable () {
+    removeTable();
+    var items = ITEMS;
     var start_index = PAGE_NUMBER*NUM_ITEMS_PER_PAGE;
     var end_index = ((PAGE_NUMBER+1)*NUM_ITEMS_PER_PAGE);
 
@@ -69,4 +70,4 @@ subscribe('numItemsPerPageChange', handleNumItemsChange)
 drawNumbers();
 addButtonEvent();
 addSortEvent();
-createTable();
+reCreateTable();

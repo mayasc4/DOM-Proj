@@ -12,9 +12,8 @@ function addSortEvent() {
 
 function sortItemsAndReRender(field) {
     console.log("sort event catched");
-    removeTable();
-    DISPLAYED_ITEMS = ITEMS.sort(function(a, b) {
+    ITEMS.sort(function(a, b) {
         return a[field] > b[field] ? 1 : -1 ;
     });
-    createTable(DISPLAYED_ITEMS);
+    reCreateTable();
 }
