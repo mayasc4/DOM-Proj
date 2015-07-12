@@ -6,14 +6,7 @@
 function addSortEvent() {
     var sort_arrows = document.querySelectorAll('.table .heading .sort');
     for (var i=0 ; i < sort_arrows.length ; i++) {
-        sort_arrows[i].addEventListener('click', function () { publish('sortEvent', this.getAttribute('name')) }.bind(sort_arrows[i]) );
+        sort_arrows[i].addEventListener('click', function () { PubSub.publish('sortEvent', this.getAttribute('name')) }.bind(sort_arrows[i]) );
     }
 }
 
-function sortItemsAndReRender(field) {
-    console.log("sort event catched");
-    ITEMS.sort(function(a, b) {
-        return a[field] > b[field] ? 1 : -1 ;
-    });
-    reCreateTable();
-}
