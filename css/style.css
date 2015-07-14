@@ -58,3 +58,11 @@ body {
     list-style-type: none;
     border: 1px solid black;
 }
+
+.error {
+    color: red;
+}
+
+.onsale {
+    background-color: yellow;
+}

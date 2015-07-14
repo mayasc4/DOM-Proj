@@ -7,6 +7,7 @@
 var Coupons = (function () {
 
     var allCoupons = {};
+    var appliedCoupons = [];
 
     var generatedCode = 0;
     var Coupon = function () {
@@ -44,11 +45,7 @@ var Coupons = (function () {
             return newCoupon.code;
         },
 
-        removeCoupon: function (code) {
-            delete allCoupons[code];
-        },
-
-        getCouponByCode: function () {
+        getCouponByCode: function (code) {
             return allCoupons[code];
         },
 
@@ -56,6 +53,37 @@ var Coupons = (function () {
             if (allCoupons[code]) {
                 return true;
             }
+        },
+
+        useCoupon: function(code) {
+            if (Coupons.validateCoupon(code)) {
+                Cart.drawCart(code);
+            } else {
+                PubSub.publish('invalidCouponEvent');
+            }
+        },
+
+        handleInvalidCoupon: function() {
+            Utilities.removeSpecificElements('.table.cart', 'div.error');
+            var cart = document.querySelector('.table.cart');
+            cart.appendChild(Utilities.createNewElement('div','error','Invalid Coupon'));
+        },
+
+        calcCouponDiscount: function (couponCode, totalCost, maxCost) {
+            var coupon = Coupons.getCouponByCode(couponCode);
+            if (coupon.type === 'free') {
+                return totalCost - maxCost;
+            } else {
+                return totalCost * (1 - coupon.discountValue);
+            }
         }
     }
+}());
+
+(function initiateCoupons() {
+    Coupons.addCoupon(Coupons.FreeCoupon);
+    Coupons.addCoupon(Coupons.FreeCoupon);
+    Coupons.addCoupon(Coupons.DiscountCoupon, 0.05);
+    Coupons.addCoupon(Coupons.FreeCoupon);
+    Coupons.addCoupon(Coupons.DiscountCoupon, 0.1);
 }());

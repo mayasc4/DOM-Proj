@@ -5,7 +5,7 @@
 /* Products */
 
 var Products = (function () {
-    var Product = function (objectItem) {
+    var Product = function (objectItem, onSale) {
         this.id = objectItem.id;
         this.name = objectItem.name;
         this.price = objectItem.price;
@@ -13,18 +13,22 @@ var Products = (function () {
         this.description = objectItem.description;
         this.image = objectItem.image;
         this.quantity = objectItem.quantity;
-        this.onSale = false;
+        this.onSale = onSale;
     };
 
     var allProducts = {};
 
-    function addProduct(objectItem) {
-        allProducts[objectItem.id] = new Product(objectItem);
+    function addProduct(objectItem, onSale) {
+        allProducts[objectItem.id] = new Product(objectItem, onSale);
     }
 
     (function insertITEMS() {
         for (var item in ITEMS) {
-            addProduct(ITEMS[item]);
+            if (item % 4 === 0) {
+                addProduct(ITEMS[item], true);
+            } else {
+                addProduct(ITEMS[item], false);
+            }
         }
     }());
 
@@ -32,7 +36,12 @@ var Products = (function () {
 
 
     function getProductRow(product) {
-        var newRow = Utilities.createNewElement('div', 'row');
+        var newRow;
+        if (product.onSale) {
+            newRow = Utilities.createNewElement('div', 'row onsale');
+        } else {
+            var newRow = Utilities.createNewElement('div', 'row');
+        }
 
         for (var prop in product) {
             if (prop === 'quantity' || prop === 'intPrice' || prop === 'onSale') { //TODO make this pretty
@@ -51,10 +60,14 @@ var Products = (function () {
             newRow.appendChild(Utilities.createNewElement('div', 'cell', content, {name: prop}));
         }
 
-        var newAdd = Utilities.createNewElement('div', 'cell add-item clickable', 'Add');
-        newAdd.addEventListener('click', function () {
-            PubSub.publish('addItem', this.id)
-        }.bind(product));
+        var newAdd;
+        if (product.quantity === 0) {
+            newAdd = Utilities.createNewElement('div', 'cell out-of-stock', 'Out Of Stock');
+        } else {
+            var newAdd = Utilities.createNewElement('div', 'cell add-item clickable', 'Add');
+            newAdd.addEventListener('click', function () { PubSub.publish('addItem', this.id) }.bind(product));
+            newAdd.addEventListener('click', function () { PubSub.publish('drawCart') });
+        }
 
         newRow.appendChild(newAdd);
 

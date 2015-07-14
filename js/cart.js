@@ -12,35 +12,54 @@ var Cart = (function () {
         var cartContent = document.createDocumentFragment();
 
         for (var productId in productsInCart) {
-            var new_item = Utilities.createNewElement('div','row');
+            var newItem = Utilities.createNewElement('div','row');
             var product = Products.getProductById(productId);
 
-            new_item.appendChild(Utilities.createNewElement('div', 'cell', product.id, {name: 'id'}));
-            new_item.appendChild(Utilities.createNewElement('div', 'cell', product.name, {name: 'name'}));
-            new_item.appendChild(Utilities.createNewElement('div', 'cell', product.price, {name: 'price'}));
-            new_item.appendChild(Utilities.createNewElement('div', 'cell', productsInCart[productId], {name: 'quantity'}));
+            newItem.appendChild(Utilities.createNewElement('div', 'cell', product.id, {name: 'id'}));
+            newItem.appendChild(Utilities.createNewElement('div', 'cell', product.name, {name: 'name'}));
+            newItem.appendChild(Utilities.createNewElement('div', 'cell', product.price, {name: 'price'}));
+            newItem.appendChild(Utilities.createNewElement('div', 'cell', productsInCart[productId], {name: 'quantity'}));
 
-            var remove_div = Utilities.createNewElement('div', 'cell clickable', 'Remove', {'id': product.id});
-            remove_div.addEventListener('click',function(){ PubSub.publish('removeItem',product.id)}.bind(product));
+            var removeDiv = Utilities.createNewElement('div', 'cell clickable', 'Remove', {'id': product.id});
+            removeDiv.addEventListener('click',function(){ PubSub.publish('removeItem',this.id)}.bind(product) );
+            removeDiv.addEventListener('click',function(){ PubSub.publish('drawCart') });
 
-            new_item.appendChild(remove_div);
+            newItem.appendChild(removeDiv);
 
-            cartContent.appendChild(new_item);
+            cartContent.appendChild(newItem);
         }
         return cartContent;
     }
 
-    function calculateTotalCost() {
+
+    function calculateTotalCost(couponCode) {
         var tempTotal = 0;
+        var maxCost = 0;
         for (var productId in productsInCart) {
-
             var product = Products.getProductById(productId);
-
+            maxCost = maxCost < product.intPrice ? product.intPrice : maxCost;
             tempTotal += product.intPrice * productsInCart[productId];
         }
         totalCost = tempTotal;
-        //TODO - insert coupon calc
+
+        if (couponCode) {
+            totalCost = Coupons.calcCouponDiscount(couponCode, totalCost, maxCost);
+        }
+
         return totalCost;
+    }
+
+    function getCouponDiv() {
+        var couponDiv = Utilities.createNewElement('div','row', 'Enter Coupon Code: ');
+
+        var inputField = Utilities.createNewElement('input', '', '', {type: 'text'});
+        couponDiv.appendChild(inputField);
+
+        var buttonElement = Utilities.createNewElement('button', '', 'Get Discount');
+        buttonElement.addEventListener('click', function () { PubSub.publish('useCoupon', inputField.value) } );
+        couponDiv.appendChild(buttonElement);
+
+        return couponDiv;
     }
 
 
@@ -62,16 +81,20 @@ var Cart = (function () {
             Products.increaseProductQuantity(productId);
         },
 
-        drawCart: function () {
+        drawCart: function (couponCode) {
             // Remove old
             Utilities.removeSpecificElements('.table.cart', 'div.total');
             Utilities.removeSpecificElements('.table.cart', 'div.row');
+            Utilities.removeSpecificElements('.table.cart', 'div.error');
 
             // Create new
             var cartContent = getCartDOM();
 
             // Add Calculation to Cart
-            cartContent.appendChild(Utilities.createNewElement('div','total','Total:' + calculateTotalCost() + '$'));
+            cartContent.appendChild(Utilities.createNewElement('div','total','Total:' + calculateTotalCost(couponCode) + '$'));
+
+            // Add Coupons Option to Cart
+            cartContent.appendChild(getCouponDiv());
 
             // Add to cart table
             var cart = document.querySelector('.table.cart');
