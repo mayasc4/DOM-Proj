@@ -8,17 +8,22 @@
 var pageNumbers = (function () {
     function drawNumbers() {
         // Remove Old Numbers
-        Utilities.removeSpecificElements('.pages', 'ul');
+        DOMUtils.removeMatchingChildren('.pages', 'ul');
 
-        var new_list = Utilities.createNewElement('ul');
+        var new_list = DOMUtils.createNewElement('ul');
 
         var pageIndex = 1;
         for (var i = 1; i <= NUMBER_OF_ITEMS; i = i + NUM_ITEMS_PER_PAGE) {
 
-            var new_page_num = Utilities.createNewElement('li', 'page-number clickable', pageIndex, {'page-number': pageIndex});
+            var new_page_num = DOMUtils.createNewElement('li', 'page-number clickable', pageIndex, {'page-number': pageIndex});
             new_page_num.addEventListener('click', function () {
                 PubSub.publish('pageChange', this)
             }.bind(pageIndex));
+
+            if (pageIndex - 1 === PAGE_NUMBER) {
+                new_page_num.setAttribute('class','page-number selected')
+            }
+
             new_list.appendChild(new_page_num);
 
             pageIndex++;
@@ -31,7 +36,6 @@ var pageNumbers = (function () {
     drawNumbers();
 
     (function addButtonEvent() {
-        // Add event to catch when pressing the button
         var button = document.getElementsByTagName('button');
         button[0].addEventListener('click', function () {
             PubSub.publish('numItemsPerPageChange')
@@ -41,7 +45,8 @@ var pageNumbers = (function () {
     return {
         handlePageChange: function (pageIndex) {
             PAGE_NUMBER = pageIndex - 1;
-            Products.drawProductsTable();
+            Store.drawProductsTable();
+            drawNumbers();
         },
 
 
@@ -51,7 +56,7 @@ var pageNumbers = (function () {
             NUM_ITEMS_PER_PAGE = parseInt(newNumItems.value);
             PAGE_NUMBER = 0;
 
-            Products.drawProductsTable();
+            Store.drawProductsTable();
             drawNumbers();
         }
 

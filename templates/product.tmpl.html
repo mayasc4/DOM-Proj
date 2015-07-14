@@ -1,0 +1,21 @@
+{{each products}}
+<div class="row">
+    <div class="cell" name="{{id}}">{{id}}</div>
+    <div class="cell" name="{{name}}">{{name}}</div>
+    <div class="cell" name="{{price}}">{{price}}</div>
+    <div class="cell" name="{{description}}">{{description}}</div>
+    <div class="cell">
+        <img src="{{image}}" alt="{{name}}"/>
+    </div>
+    {{{ifOutOfStock quantity}}}
+</div>
+{{/each}}
+
+
+
+Handlebars.registerHelper('ifCond', function(quantity) {
+if (quantity === 0) {
+return '<div class="cell out-of-stock">Out Of Stock</div>';
+}
+return '<div class="cell add-item clickable">Add</div>';
+});

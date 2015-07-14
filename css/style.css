@@ -1,5 +1,6 @@
+@import url("colors.css");
+
 body {
-    background-color: lightblue;
     text-align: center;
 }
 
@@ -39,15 +40,9 @@ body {
     height: 5%;
     margin: 0;
     padding: 0;
-    /*display: inline;*/
 }
 
 .sort:hover {
-    cursor: pointer;
-}
-
-.clickable:hover {
-    background-color: lightcyan;
     cursor: pointer;
 }
 
@@ -59,10 +54,3 @@ body {
     border: 1px solid black;
 }
 
-.error {
-    color: red;
-}
-
-.onsale {
-    background-color: yellow;
-}

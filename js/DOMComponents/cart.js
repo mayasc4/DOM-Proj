@@ -8,19 +8,19 @@ var Cart = (function () {
     var productsInCart = {};
     var totalCost = 0;
 
-    function getCartDOM () {
+    function createCartFragment () {
         var cartContent = document.createDocumentFragment();
 
         for (var productId in productsInCart) {
-            var newItem = Utilities.createNewElement('div','row');
+            var newItem = DOMUtils.createNewElement('div','row');
             var product = Products.getProductById(productId);
 
-            newItem.appendChild(Utilities.createNewElement('div', 'cell', product.id, {name: 'id'}));
-            newItem.appendChild(Utilities.createNewElement('div', 'cell', product.name, {name: 'name'}));
-            newItem.appendChild(Utilities.createNewElement('div', 'cell', product.price, {name: 'price'}));
-            newItem.appendChild(Utilities.createNewElement('div', 'cell', productsInCart[productId], {name: 'quantity'}));
+            newItem.appendChild(DOMUtils.createNewElement('div', 'cell', product.id, {name: 'id'}));
+            newItem.appendChild(DOMUtils.createNewElement('div', 'cell', product.name, {name: 'name'}));
+            newItem.appendChild(DOMUtils.createNewElement('div', 'cell', product.price, {name: 'price'}));
+            newItem.appendChild(DOMUtils.createNewElement('div', 'cell', productsInCart[productId], {name: 'quantity'}));
 
-            var removeDiv = Utilities.createNewElement('div', 'cell clickable', 'Remove', {'id': product.id});
+            var removeDiv = DOMUtils.createNewElement('div', 'cell clickable', 'Remove', {'id': product.id});
             removeDiv.addEventListener('click',function(){ PubSub.publish('removeItem',this.id)}.bind(product) );
             removeDiv.addEventListener('click',function(){ PubSub.publish('drawCart') });
 
@@ -49,13 +49,13 @@ var Cart = (function () {
         return totalCost;
     }
 
-    function getCouponDiv() {
-        var couponDiv = Utilities.createNewElement('div','row', 'Enter Coupon Code: ');
+    function createCouponElement() {
+        var couponDiv = DOMUtils.createNewElement('div','row', 'Enter Coupon Code: ');
 
-        var inputField = Utilities.createNewElement('input', '', '', {type: 'text'});
+        var inputField = DOMUtils.createNewElement('input', '', '', {type: 'text'});
         couponDiv.appendChild(inputField);
 
-        var buttonElement = Utilities.createNewElement('button', '', 'Get Discount');
+        var buttonElement = DOMUtils.createNewElement('button', '', 'Get Discount');
         buttonElement.addEventListener('click', function () { PubSub.publish('useCoupon', inputField.value) } );
         couponDiv.appendChild(buttonElement);
 
@@ -78,23 +78,24 @@ var Cart = (function () {
             if (productsInCart[productId] === 0) {
                    delete productsInCart[productId];
             }
+            PubSub.publish('increaseProductQuantity', productId);
             Products.increaseProductQuantity(productId);
         },
 
         drawCart: function (couponCode) {
             // Remove old
-            Utilities.removeSpecificElements('.table.cart', 'div.total');
-            Utilities.removeSpecificElements('.table.cart', 'div.row');
-            Utilities.removeSpecificElements('.table.cart', 'div.error');
+            DOMUtils.removeMatchingChildren('.table.cart', 'div.total');
+            DOMUtils.removeMatchingChildren('.table.cart', 'div.row');
+            DOMUtils.removeMatchingChildren('.table.cart', 'div.error');
 
             // Create new
-            var cartContent = getCartDOM();
+            var cartContent = createCartFragment();
 
             // Add Calculation to Cart
-            cartContent.appendChild(Utilities.createNewElement('div','total','Total:' + calculateTotalCost(couponCode) + '$'));
+            cartContent.appendChild(DOMUtils.createNewElement('div','total','Total:' + calculateTotalCost(couponCode) + '$'));
 
             // Add Coupons Option to Cart
-            cartContent.appendChild(getCouponDiv());
+            cartContent.appendChild(createCouponElement());
 
             // Add to cart table
             var cart = document.querySelector('.table.cart');

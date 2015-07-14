@@ -58,15 +58,16 @@ var Coupons = (function () {
         useCoupon: function(code) {
             if (Coupons.validateCoupon(code)) {
                 Cart.drawCart(code);
+
             } else {
                 PubSub.publish('invalidCouponEvent');
             }
         },
 
         handleInvalidCoupon: function() {
-            Utilities.removeSpecificElements('.table.cart', 'div.error');
+            DOMUtils.removeMatchingChildren('.table.cart', 'div.error');
             var cart = document.querySelector('.table.cart');
-            cart.appendChild(Utilities.createNewElement('div','error','Invalid Coupon'));
+            cart.appendChild(DOMUtils.createNewElement('div','error','Invalid Coupon'));
         },
 
         calcCouponDiscount: function (couponCode, totalCost, maxCost) {

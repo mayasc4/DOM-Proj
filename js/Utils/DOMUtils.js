@@ -2,7 +2,7 @@
  * Created by mayasc on 7/5/15.
  */
 
-var Utilities = (function () {
+var DOMUtils = (function () {
 
     return {
         createNewElement: function (element_type, class_text, content, moreAttr) {
@@ -22,9 +22,9 @@ var Utilities = (function () {
             element.innerHTML = '';
         },
 
-        removeSpecificElements: function (query, specificElements) {
-            var element = document.querySelector(query);
-            var elementsToRemove = element.querySelectorAll(specificElements);
+        removeMatchingChildren: function (parentQuery, childrenQuery) {
+            var element = document.querySelector(parentQuery);
+            var elementsToRemove = element.querySelectorAll(childrenQuery);
             for (var i = 0; i < elementsToRemove.length; i++) {
                 element.removeChild(elementsToRemove[i]);
             }

@@ -1,0 +1,24 @@
+body {
+    background-color: lightblue;
+}
+
+.clickable:hover {
+    background-color: lightcyan;
+    cursor: pointer;
+}
+
+.error {
+    color: red;
+}
+
+.onsale {
+    background-color: #f2ff80;
+}
+
+.selected {
+    background-color: lightcyan;
+}
+
+.out-of-stock {
+    opacity: 0.5;
+}
