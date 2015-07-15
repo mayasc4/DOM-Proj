@@ -13,9 +13,3 @@
 
 
 
-Handlebars.registerHelper('ifCond', function(quantity) {
-if (quantity === 0) {
-return '<div class="cell out-of-stock">Out Of Stock</div>';
-}
-return '<div class="cell add-item clickable">Add</div>';
-});

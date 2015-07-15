@@ -10,6 +10,18 @@ body {
     margin: auto;
 }
 
+.row {
+    display: table-row;
+}
+
+.cell {
+    display: table-cell;
+    border: 1px solid black;
+    padding-left: 5px;
+    padding-right: 5px;
+    max-width: 500px;
+}
+
 .title {
     display: table-caption;
     text-align: center;
@@ -21,18 +33,6 @@ body {
     display: table-row;
     font-weight: bold;
     text-align: center;
-}
-
-.row {
-    display: table-row;
-}
-
-.cell {
-    display: table-cell;
-    border: 1px solid black;
-    padding-left: 5px;
-    padding-right: 5px;
-    max-width: 500px;
 }
 
 .sort {

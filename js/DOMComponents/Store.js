@@ -6,6 +6,15 @@ var Store = (function () {
 
     var productsOrder = [];
 
+    (function addSortEventListener () {
+        var sort_arrows = document.querySelectorAll('.table .heading .sort');
+        for (var i = 0; i < sort_arrows.length; i++) {
+            sort_arrows[i].addEventListener('click', function () {
+                PubSub.publish('sortEvent', this.getAttribute('name'))
+            }.bind(sort_arrows[i]));
+        }
+    }());
+
     (function initiateProducts() {
         for (var item in ITEMS) {
             if (item % 4 === 0) {
@@ -22,6 +31,8 @@ var Store = (function () {
 
     function createProductElement(product) {
         var newRow;
+        // TODO change this uglyness
+        // TODO add to onSale - price before sale
         if ((product.onSale) && (product.quantity === 0)) {
             newRow = DOMUtils.createNewElement('div', 'row onsale out-of-stock');
         } else if (product.quantity === 0) {
@@ -54,8 +65,12 @@ var Store = (function () {
             newAdd = DOMUtils.createNewElement('div', 'cell out-of-stock', 'Out Of Stock');
         } else {
             newAdd = DOMUtils.createNewElement('div', 'cell add-item clickable', 'Add');
-            newAdd.addEventListener('click', function () { PubSub.publish('addItem', this.id) }.bind(product));
-            newAdd.addEventListener('click', function () { PubSub.publish('drawCart') });
+            newAdd.addEventListener('click', function () {
+                PubSub.publish('addItem', this.id)
+            }.bind(product));
+            newAdd.addEventListener('click', function () {
+                PubSub.publish('drawCart')
+            });
         }
 
         newRow.appendChild(newAdd);
@@ -64,23 +79,16 @@ var Store = (function () {
     }
 
 
-    function getProductsDOM(productsToDraw) {
+    function createProductsFragment(productsToDraw) {
         var newFragment = document.createDocumentFragment();
 
-        for (var index = 0 ; index < productsToDraw.length ; index++ ) {
+        for (var index = 0; index < productsToDraw.length; index++) {
             var product = Products.getProductById(productsToDraw[index]);
             newFragment.appendChild(createProductElement(product));
         }
 
         return newFragment;
 
-        //
-        //Handlebars.registerHelper('ifCond', function(quantity) {
-        //    if (quantity === 0) {
-        //        return '<div class="cell out-of-stock">Out Of Stock</div>';
-        //    }
-        //    return '<div class="cell add-item clickable">Add</div>';
-        //});
     }
 
     return {
@@ -99,23 +107,16 @@ var Store = (function () {
 
         drawProductsTable: function () {
             // Delete Current Table
-            DOMUtils.removeMatchingChildren('.table.products','.row');
+            DOMUtils.removeMatchingChildren('.table.products', '.row');
 
             // Create New Table
-            var start_index = PAGE_NUMBER*NUM_ITEMS_PER_PAGE;
-            var end_index = ((PAGE_NUMBER+1)*NUM_ITEMS_PER_PAGE);
-            var productsToDraw = productsOrder.slice(start_index,end_index);
+            var start_index = PAGE_NUMBER * NUM_ITEMS_PER_PAGE;
+            var end_index = ((PAGE_NUMBER + 1) * NUM_ITEMS_PER_PAGE);
+            var productsToDraw = productsOrder.slice(start_index, end_index);
 
             var table = document.querySelector('.table');
 
-            table.appendChild( getProductsDOM(productsToDraw) );
-        },
-
-        addSortEventListener: function () {
-        var sort_arrows = document.querySelectorAll('.table .heading .sort');
-        for (var i=0 ; i < sort_arrows.length ; i++) {
-            sort_arrows[i].addEventListener('click', function () { PubSub.publish('sortEvent', this.getAttribute('name')) }.bind(sort_arrows[i]) );
+            table.appendChild(createProductsFragment(productsToDraw));
         }
-    }
     }
 }());

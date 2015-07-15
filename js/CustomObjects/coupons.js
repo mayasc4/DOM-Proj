@@ -7,7 +7,6 @@
 var Coupons = (function () {
 
     var allCoupons = {};
-    var appliedCoupons = [];
 
     var generatedCode = 0;
     var Coupon = function () {
@@ -17,17 +16,17 @@ var Coupons = (function () {
     var DiscountCoupon = function (discountValue) {
         Coupon.call(this);
         this.discountValue = discountValue;
-        this.type = 'discount';
+        //this.type = 'discount';
     };
-    DiscountCoupon.prototype = Coupon;
+    DiscountCoupon.prototype = Object.create(Coupon.prototype);
     DiscountCoupon.prototype.constructor = DiscountCoupon;
 
 
     var FreeCoupon = function () {
         Coupon.call(this);
-        this.type = 'free';
+        //this.type = 'free';
     };
-    FreeCoupon.prototype = Coupon;
+    FreeCoupon.prototype = Object.create(Coupon.prototype);
     FreeCoupon.prototype.constructor = FreeCoupon;
 
     return {
@@ -72,19 +71,11 @@ var Coupons = (function () {
 
         calcCouponDiscount: function (couponCode, totalCost, maxCost) {
             var coupon = Coupons.getCouponByCode(couponCode);
-            if (coupon.type === 'free') {
+            if (coupon instanceof FreeCoupon) {
                 return totalCost - maxCost;
             } else {
                 return totalCost * (1 - coupon.discountValue);
             }
         }
     }
-}());
-
-(function initiateCoupons() {
-    Coupons.addCoupon(Coupons.FreeCoupon);
-    Coupons.addCoupon(Coupons.FreeCoupon);
-    Coupons.addCoupon(Coupons.DiscountCoupon, 0.05);
-    Coupons.addCoupon(Coupons.FreeCoupon);
-    Coupons.addCoupon(Coupons.DiscountCoupon, 0.1);
 }());

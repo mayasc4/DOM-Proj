@@ -5,9 +5,9 @@
 var DOMUtils = (function () {
 
     return {
-        createNewElement: function (element_type, class_text, content, moreAttr) {
-            var new_div = document.createElement(element_type);
-            new_div.setAttribute('class', class_text);
+        createNewElement: function (elementType, classText, content, moreAttr) {
+            var new_div = document.createElement(elementType);
+            new_div.setAttribute('class', classText);
             new_div.textContent = content || "";
             for (var attr in moreAttr) {
                 if (moreAttr.hasOwnProperty(attr)) {
@@ -17,7 +17,7 @@ var DOMUtils = (function () {
             return new_div;
         },
 
-        removeElementByQuery: function (query) {
+        emptyElementByQuery: function (query) {
             var element = document.querySelector(query);
             element.innerHTML = '';
         },

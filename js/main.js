@@ -4,6 +4,14 @@
 
 /* MAIN */
 
+(function initiateCoupons() {
+    Coupons.addCoupon(Coupons.FreeCoupon);
+    Coupons.addCoupon(Coupons.FreeCoupon);
+    Coupons.addCoupon(Coupons.DiscountCoupon, 0.05);
+    Coupons.addCoupon(Coupons.FreeCoupon);
+    Coupons.addCoupon(Coupons.DiscountCoupon, 0.1);
+}());
+
 PubSub.subscribe('drawCart',Cart.drawCart);
 
 PubSub.subscribe('addItem',Cart.addProductToCart);
