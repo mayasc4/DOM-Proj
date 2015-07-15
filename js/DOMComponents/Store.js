@@ -4,8 +4,6 @@
 
 var Store = (function () {
 
-    var productsOrder = [];
-
     (function addSortEventListener () {
         var sort_arrows = document.querySelectorAll('.table .heading .sort');
         for (var i = 0; i < sort_arrows.length; i++) {
@@ -15,27 +13,13 @@ var Store = (function () {
         }
     }());
 
-    (function initiateProducts() {
-        for (var item in ITEMS) {
-            if (item % 4 === 0) {
-                Products.addProduct(ITEMS[item]);
-                Products.setProductOnSale(ITEMS[item].id, true);
-            } else {
-                Products.addProduct(ITEMS[item]);
-            }
-        }
-    }());
-
-    productsOrder = Object.keys(Products.getAllProducts());
-
-
     function createProductElement(product) {
         var newRow;
         // TODO change this uglyness
         // TODO add to onSale - price before sale
-        if ((product.onSale) && (product.quantity === 0)) {
+        if ((product.onSale) && (!Products.isProductInStock(product.id))) {
             newRow = DOMUtils.createNewElement('div', 'row onsale out-of-stock');
-        } else if (product.quantity === 0) {
+        } else if (!Products.isProductInStock(product.id)) {
             newRow = DOMUtils.createNewElement('div', 'row out-of-stock');
         } else if (product.onSale) {
             newRow = DOMUtils.createNewElement('div', 'row onsale');
@@ -92,27 +76,14 @@ var Store = (function () {
     }
 
     return {
-        getProductsOrder: function () {
-            return productsOrder;
-        },
-
-        sortProductsByProperty: function (field) {
-            productsOrder.sort(function (a, b) {
-                // TODO Make this more efficient
-                var productA = Products.getProductById(a);
-                var productB = Products.getProductById(b);
-                return productA[field] > productB[field] ? 1 : -1;
-            });
-        },
-
         drawProductsTable: function () {
             // Delete Current Table
-            DOMUtils.removeMatchingChildren('.table.products', '.row');
+            DOMUtils.removeChildren('.table.products', '.row');
 
             // Create New Table
             var start_index = PAGE_NUMBER * NUM_ITEMS_PER_PAGE;
             var end_index = ((PAGE_NUMBER + 1) * NUM_ITEMS_PER_PAGE);
-            var productsToDraw = productsOrder.slice(start_index, end_index);
+            var productsToDraw = Products.getProductsOrder().slice(start_index, end_index);
 
             var table = document.querySelector('.table');
 

@@ -56,15 +56,15 @@ var Coupons = (function () {
 
         useCoupon: function(code) {
             if (Coupons.validateCoupon(code)) {
-                Cart.drawCart(code);
-
+                CashRegister.addCouponToCart(code);
+                PubSub.publish('drawCart');
             } else {
                 PubSub.publish('invalidCouponEvent');
             }
         },
 
         handleInvalidCoupon: function() {
-            DOMUtils.removeMatchingChildren('.table.cart', 'div.error');
+            DOMUtils.removeChildren('.table.cart', 'div.error');
             var cart = document.querySelector('.table.cart');
             cart.appendChild(DOMUtils.createNewElement('div','error','Invalid Coupon'));
         },

@@ -5,20 +5,18 @@
 /* Cart */
 
 var Cart = (function () {
-    var productsInCart = {};
-    var totalCost = 0;
 
     function createCartFragment () {
         var cartContent = document.createDocumentFragment();
 
-        for (var productId in productsInCart) {
+        for (var productId in CashRegister.getProductsInCart()) {
             var newItem = DOMUtils.createNewElement('div','row');
             var product = Products.getProductById(productId);
 
             newItem.appendChild(DOMUtils.createNewElement('div', 'cell', product.id, {name: 'id'}));
             newItem.appendChild(DOMUtils.createNewElement('div', 'cell', product.name, {name: 'name'}));
             newItem.appendChild(DOMUtils.createNewElement('div', 'cell', product.price, {name: 'price'}));
-            newItem.appendChild(DOMUtils.createNewElement('div', 'cell', productsInCart[productId], {name: 'quantity'}));
+            newItem.appendChild(DOMUtils.createNewElement('div', 'cell', CashRegister.getProductsInCart()[productId], {name: 'quantity'}));
 
             var removeDiv = DOMUtils.createNewElement('div', 'cell clickable', 'Remove', {'id': product.id});
             removeDiv.addEventListener('click',function(){ PubSub.publish('removeItem',this.id)}.bind(product) );
@@ -29,24 +27,6 @@ var Cart = (function () {
             cartContent.appendChild(newItem);
         }
         return cartContent;
-    }
-
-
-    function calculateTotalCost(couponCode) {
-        var tempTotal = 0;
-        var maxCost = 0;
-        for (var productId in productsInCart) {
-            var product = Products.getProductById(productId);
-            maxCost = maxCost < product.intPrice ? product.intPrice : maxCost;
-            tempTotal += product.intPrice * productsInCart[productId];
-        }
-        totalCost = tempTotal;
-
-        if (couponCode) {
-            totalCost = Coupons.calcCouponDiscount(couponCode, totalCost, maxCost);
-        }
-
-        return totalCost;
     }
 
     function createCouponElement() {
@@ -64,35 +44,18 @@ var Cart = (function () {
 
 
     return {
-        addProductToCart: function (productId) {
-            if (productId in productsInCart) {
-                productsInCart[productId] += 1;
-            } else {
-                productsInCart[productId] = 1;
-            }
-            Products.reduceProductQuantity(productId);
-        },
 
-        removeProductFromCart: function (productId) {
-            productsInCart[productId] -= 1;
-            if (productsInCart[productId] === 0) {
-                   delete productsInCart[productId];
-            }
-            PubSub.publish('increaseProductQuantity', productId);
-            Products.increaseProductQuantity(productId);
-        },
-
-        drawCart: function (couponCode) {
+        drawCart: function () {
             // Remove old
-            DOMUtils.removeMatchingChildren('.table.cart', 'div.total');
-            DOMUtils.removeMatchingChildren('.table.cart', 'div.row');
-            DOMUtils.removeMatchingChildren('.table.cart', 'div.error');
+            DOMUtils.removeChildren('.table.cart', 'div.total');
+            DOMUtils.removeChildren('.table.cart', 'div.row');
+            DOMUtils.removeChildren('.table.cart', 'div.error');
 
             // Create new
             var cartContent = createCartFragment();
 
             // Add Calculation to Cart
-            cartContent.appendChild(DOMUtils.createNewElement('div','total','Total:' + calculateTotalCost(couponCode) + '$'));
+            cartContent.appendChild(DOMUtils.createNewElement('div','total','Total:' + CashRegister.getTotalCost() + '$'));
 
             // Add Coupons Option to Cart
             cartContent.appendChild(createCouponElement());

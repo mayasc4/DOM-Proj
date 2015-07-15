@@ -22,7 +22,7 @@ var DOMUtils = (function () {
             element.innerHTML = '';
         },
 
-        removeMatchingChildren: function (parentQuery, childrenQuery) {
+        removeChildren: function (parentQuery, childrenQuery) {
             var element = document.querySelector(parentQuery);
             var elementsToRemove = element.querySelectorAll(childrenQuery);
             for (var i = 0; i < elementsToRemove.length; i++) {

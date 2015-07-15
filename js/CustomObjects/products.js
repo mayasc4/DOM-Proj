@@ -7,6 +7,7 @@
 var Products = (function () {
 
     var allProducts = {};
+    var productsOrder = [];
 
     var Product = function (objectItem) {
         this.id = objectItem.id;
@@ -18,6 +19,7 @@ var Products = (function () {
         this.quantity = objectItem.quantity;
         this.onSale = false;
     };
+
 
 
     return {
@@ -47,6 +49,23 @@ var Products = (function () {
 
         isProductInStock: function (productId) {
             return allProducts[productId].quantity !== 0;
+        },
+
+        initiateProductsOrder: function() {
+            productsOrder = Object.keys(Products.getAllProducts());
+        },
+
+        getProductsOrder: function () {
+            return productsOrder;
+        },
+
+        sortProductsByProperty: function (field) {
+            productsOrder.sort(function (a, b) {
+                // TODO Make this more efficient
+                var productA = Products.getProductById(a);
+                var productB = Products.getProductById(b);
+                return productA[field] > productB[field] ? 1 : -1;
+            });
         }
     }
 }());

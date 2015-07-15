@@ -4,6 +4,19 @@
 
 /* MAIN */
 
+(function initiateProducts() {
+    for (var item in ITEMS) {
+        if (item % 4 === 0) {
+            Products.addProduct(ITEMS[item]);
+            Products.setProductOnSale(ITEMS[item].id, true);
+        } else {
+            Products.addProduct(ITEMS[item]);
+        }
+    }
+}());
+
+Products.initiateProductsOrder();
+
 (function initiateCoupons() {
     Coupons.addCoupon(Coupons.FreeCoupon);
     Coupons.addCoupon(Coupons.FreeCoupon);
@@ -14,13 +27,13 @@
 
 PubSub.subscribe('drawCart',Cart.drawCart);
 
-PubSub.subscribe('addItem',Cart.addProductToCart);
+PubSub.subscribe('addItem',CashRegister.addProductToCart);
 PubSub.subscribe('addItem',Store.drawProductsTable);
 
-PubSub.subscribe('removeItem',Cart.removeProductFromCart);
+PubSub.subscribe('removeItem',CashRegister.removeProductFromCart);
 PubSub.subscribe('removeItem',Store.drawProductsTable);
 
-PubSub.subscribe('sortEvent',Store.sortProductsByProperty);
+PubSub.subscribe('sortEvent',Products.sortProductsByProperty);
 PubSub.subscribe('sortEvent',Store.drawProductsTable);
 
 PubSub.subscribe('pageChange', pageNumbers.handlePageChange);

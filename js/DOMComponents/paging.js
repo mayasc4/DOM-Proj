@@ -8,7 +8,7 @@
 var pageNumbers = (function () {
     function drawNumbers() {
         // Remove Old Numbers
-        DOMUtils.removeMatchingChildren('.pages', 'ul');
+        DOMUtils.removeChildren('.pages', 'ul');
 
         var new_list = DOMUtils.createNewElement('ul');
 
