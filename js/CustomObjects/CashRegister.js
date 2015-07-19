@@ -42,6 +42,7 @@ var CashRegister = (function () {
             Products.reduceProductQuantity(productId);
             calculateTotalCost();
             PubSub.publish('drawStore');
+            PubSub.publish('drawCart');
         },
 
         removeProductFromCart: function (productId) {

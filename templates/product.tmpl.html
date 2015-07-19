@@ -1,14 +1,15 @@
+{{#if quantity}}
 <div class="row">
-    <div class="cell" name="{{id}}">{{id}}</div>
-    <div class="cell" name="{{name}}">{{name}}</div>
-    <div class="cell" name="{{price}}">{{price}}</div>
-    <div class="cell" name="{{description}}">{{description}}</div>
+{{else}}
+<div class="row out-of-stock">
+{{/if}}
+    <div class="cell">{{id}}</div>
+    <div class="cell">{{name}}</div>
+    {{{ifOnSale onSale price priceAfterSale}}}
+    <div class="cell">{{description}}</div>
     <div class="cell">
         <img src="{{image}}" alt="{{name}}"/>
     </div>
     {{{ifOutOfStock quantity}}}
 </div>
-
-
-
 
