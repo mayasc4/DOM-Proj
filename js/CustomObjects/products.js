@@ -18,6 +18,7 @@ var Products = (function () {
         this.image = objectItem.image;
         this.quantity = objectItem.quantity;
         this.onSale = false;
+        this.priceAfterSale = 0;
     };
 
 
@@ -35,8 +36,11 @@ var Products = (function () {
             return allProducts[productId];
         },
 
-        setProductOnSale: function (productId, setAs) {
+        setProductOnSale: function (productId, setAs, precentSale) {
             allProducts[productId].onSale = setAs;
+            if (setAs) {
+                allProducts[productId].priceAfterSale = (1-precentSale)*allProducts[productId].intPrice;
+            }
         },
 
         reduceProductQuantity: function (productId) {
@@ -66,6 +70,7 @@ var Products = (function () {
                 var productB = Products.getProductById(b);
                 return productA[field] > productB[field] ? 1 : -1;
             });
+            PubSub.publish('drawStore');
         }
     }
 }());

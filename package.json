@@ -1,0 +1,26 @@
+{
+  "name": "dom-proj",
+  "version": "1.0.0",
+  "description": " A Project to exercise javascript and more",
+  "main": "main.js",
+  "dependencies": {
+    "chalk": "^1.1.0"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-uglify": "^0.9.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mayasc4/DOM-Proj.git"
+  },
+  "author": "Maya Schuster",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mayasc4/DOM-Proj/issues"
+  },
+  "homepage": "https://github.com/mayasc4/DOM-Proj#readme"
+}

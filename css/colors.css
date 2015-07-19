@@ -11,9 +11,9 @@ body {
     color: red;
 }
 
-.onsale {
-    background-color: #f2ff80;
-}
+/*.onsale {*/
+    /*background-color: #f2ff80;*/
+/*}*/
 
 .selected {
     background-color: lightcyan;
@@ -21,4 +21,12 @@ body {
 
 .out-of-stock {
     opacity: 0.5;
+}
+
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
 }

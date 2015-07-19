@@ -12,8 +12,9 @@ var CashRegister = (function () {
         var maxCost = 0;
         for (var productId in productsInCart) {
             var product = Products.getProductById(productId);
-            maxCost = maxCost < product.intPrice ? product.intPrice : maxCost;
-            tempTotal += product.intPrice * productsInCart[productId];
+            var price  = product.onSale ? product.priceAfterSale : product.intPrice;
+            maxCost = maxCost < price ? price : maxCost;
+            tempTotal += price * productsInCart[productId];
         }
         totalCost = tempTotal;
 
@@ -40,6 +41,7 @@ var CashRegister = (function () {
             }
             Products.reduceProductQuantity(productId);
             calculateTotalCost();
+            PubSub.publish('drawStore');
         },
 
         removeProductFromCart: function (productId) {
@@ -50,6 +52,7 @@ var CashRegister = (function () {
             PubSub.publish('increaseProductQuantity', productId);
             Products.increaseProductQuantity(productId);
             calculateTotalCost();
+            PubSub.publish('drawStore');
         },
 
         getTotalCost: function () {

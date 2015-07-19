@@ -15,7 +15,11 @@ var Cart = (function () {
 
             newItem.appendChild(DOMUtils.createNewElement('div', 'cell', product.id, {name: 'id'}));
             newItem.appendChild(DOMUtils.createNewElement('div', 'cell', product.name, {name: 'name'}));
-            newItem.appendChild(DOMUtils.createNewElement('div', 'cell', product.price, {name: 'price'}));
+            if (product.onSale) {
+                newItem.appendChild(DOMUtils.createNewElement('div', 'cell green', product.priceAfterSale, {name: 'price'}));
+            } else {
+                newItem.appendChild(DOMUtils.createNewElement('div', 'cell', product.price, {name: 'price'}));
+            }
             newItem.appendChild(DOMUtils.createNewElement('div', 'cell', CashRegister.getProductsInCart()[productId], {name: 'quantity'}));
 
             var removeDiv = DOMUtils.createNewElement('div', 'cell clickable', 'Remove', {'id': product.id});

@@ -54,3 +54,6 @@ body {
     border: 1px solid black;
 }
 
+.crossedoff {
+    text-decoration: line-through;
+}

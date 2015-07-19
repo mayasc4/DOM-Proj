@@ -28,12 +28,19 @@ var Store = (function () {
         }
 
         for (var prop in product) {
-            if (prop === 'quantity' || prop === 'intPrice' || prop === 'onSale') {
+            if (prop === 'quantity' || prop === 'intPrice' || prop === 'onSale' || prop === 'priceAfterSale') {
                 continue;
             }
             if (prop === 'image') {
                 var newCell = DOMUtils.createNewElement('div', 'cell');
                 newCell.innerHTML = '<img src="' + product[prop] + '" />';
+                newRow.appendChild(newCell);
+                continue;
+            }
+            if (prop === 'price' && product.onSale === true) {
+                var newCell = DOMUtils.createNewElement('div', 'cell');
+                newCell.appendChild(DOMUtils.createNewElement('span','red crossedoff',product[prop]));
+                newCell.appendChild(DOMUtils.createNewElement('span','green', '   ' + product['priceAfterSale'].toFixed(2)));
                 newRow.appendChild(newCell);
                 continue;
             }
@@ -72,6 +79,21 @@ var Store = (function () {
         }
 
         return newFragment;
+
+        //var newFragment = document.createDocumentFragment();
+        //
+        //$.get('templates/product.tmpl.html', function(data) {
+        //    // Build the Handlebars template
+        //    var template = Handlebars.compile(data);
+        //
+        //    productsToDraw.forEach(function(pId) {
+        //        var product = Products.getProductById(productsToDraw[pId]);
+        //        newFragment.innerHTML += template(product);
+        //    });
+        //
+        //}, 'html');
+        //
+        //return newFragment;
 
     }
 

@@ -8,14 +8,13 @@
     for (var item in ITEMS) {
         if (item % 4 === 0) {
             Products.addProduct(ITEMS[item]);
-            Products.setProductOnSale(ITEMS[item].id, true);
+            Products.setProductOnSale(ITEMS[item].id, true, 0.1);
         } else {
             Products.addProduct(ITEMS[item]);
         }
     }
+    Products.initiateProductsOrder();
 }());
-
-Products.initiateProductsOrder();
 
 (function initiateCoupons() {
     Coupons.addCoupon(Coupons.FreeCoupon);
@@ -25,23 +24,18 @@ Products.initiateProductsOrder();
     Coupons.addCoupon(Coupons.DiscountCoupon, 0.1);
 }());
 
+
+// subscribe all events
 PubSub.subscribe('drawCart',Cart.drawCart);
+PubSub.subscribe('drawStore', Store.drawProductsTable);
+
 
 PubSub.subscribe('addItem',CashRegister.addProductToCart);
-PubSub.subscribe('addItem',Store.drawProductsTable);
-
 PubSub.subscribe('removeItem',CashRegister.removeProductFromCart);
-PubSub.subscribe('removeItem',Store.drawProductsTable);
-
 PubSub.subscribe('sortEvent',Products.sortProductsByProperty);
-PubSub.subscribe('sortEvent',Store.drawProductsTable);
-
 PubSub.subscribe('pageChange', pageNumbers.handlePageChange);
-
 PubSub.subscribe('numItemsPerPageChange', pageNumbers.handleNumItemsChange);
-
 PubSub.subscribe('useCoupon', Coupons.useCoupon);
-
 PubSub.subscribe('invalidCouponEvent', Coupons.handleInvalidCoupon);
 
 
