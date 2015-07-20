@@ -1,12 +1,13 @@
 /**
  * Created by mayasc on 6/30/15.
  */
+'use strict';
 
-/**
- *
- */
+//dependencies - none
 
-var PubSub = (function () {
+//var App = App || {};
+
+App.PubSub = (function () {
     var eventBus = {
 
         // internal counter for id
@@ -21,8 +22,8 @@ var PubSub = (function () {
     return {
         subscribe: function (eType, cb) {
             eventBus[eType] = eventBus[eType] || {};
-            eventBus[eType][eventBus['counter']] = cb;
-            return eventBus['counter']++;
+            eventBus[eType][eventBus.counter] = cb;
+            return eventBus.counter++;
         },
 
         publish: function (eType, data) {
@@ -42,5 +43,5 @@ var PubSub = (function () {
                 }
             }
         }
-    }
+    };
 }());

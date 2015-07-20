@@ -1,42 +1,55 @@
 /**
  * Created by mayasc on 6/29/15.
  */
+'use strict';
 
 /* MAIN */
 
-(function initiateProducts() {
-    for (var item in ITEMS) {
-        if (item % 4 === 0) {
-            Products.addProduct(ITEMS[item]);
-            Products.setProductOnSale(ITEMS[item].id, true, 0.1);
-        } else {
-            Products.addProduct(ITEMS[item]);
+(function (App) {
+
+    function initiateProducts() {
+        for (var item in App.ITEMS) {
+            if (App.ITEMS.hasOwnProperty(item)) {
+                if (item % 4 === 0) {
+                    App.Products.addProduct(App.ITEMS[item]);
+                    App.Products.setProductOnSale(App.ITEMS[item].id, true, 0.1);
+                } else {
+                    App.Products.addProduct(App.ITEMS[item]);
+                }
+            }
         }
+        App.Products.initiateProductsOrder();
     }
-    Products.initiateProductsOrder();
-}());
 
-(function initiateCoupons() {
-    Coupons.addCoupon(Coupons.FreeCoupon);
-    Coupons.addCoupon(Coupons.FreeCoupon);
-    Coupons.addCoupon(Coupons.DiscountCoupon, 0.05);
-    Coupons.addCoupon(Coupons.FreeCoupon);
-    Coupons.addCoupon(Coupons.DiscountCoupon, 0.1);
-}());
+    function initiateCoupons() {
+        App.Coupons.addCoupon(App.Coupons.FreeCoupon);
+        App.Coupons.addCoupon(App.Coupons.FreeCoupon);
+        App.Coupons.addCoupon(App.Coupons.DiscountCoupon, 0.05);
+        App.Coupons.addCoupon(App.Coupons.FreeCoupon);
+        App.Coupons.addCoupon(App.Coupons.DiscountCoupon, 0.1);
+    }
 
 
-// subscribe all events
-PubSub.subscribe('drawCart',Cart.drawCart);
-PubSub.subscribe('drawStore', Store.drawProductsTable);
+    function initEvents() {
+        App.PubSub.subscribe('drawCart', App.Cart.drawCart);
+        App.PubSub.subscribe('drawStore', App.Store.drawProductsTable);
 
+        App.PubSub.subscribe('addItem', App.CashRegister.addProductToCart);
+        App.PubSub.subscribe('removeItem', App.CashRegister.removeProductFromCart);
+        App.PubSub.subscribe('sortEvent', App.Products.sortProductsByProperty);
+        App.PubSub.subscribe('pageChange', App.pageNumbers.handlePageChange);
+        App.PubSub.subscribe('numItemsPerPageChange', App.pageNumbers.handleNumItemsChange);
+        App.PubSub.subscribe('useCoupon', App.Coupons.useCoupon);
+        App.PubSub.subscribe('invalidCouponEvent', App.Coupons.handleInvalidCoupon);
+    }
 
-PubSub.subscribe('addItem',CashRegister.addProductToCart);
-PubSub.subscribe('removeItem',CashRegister.removeProductFromCart);
-PubSub.subscribe('sortEvent',Products.sortProductsByProperty);
-PubSub.subscribe('pageChange', pageNumbers.handlePageChange);
-PubSub.subscribe('numItemsPerPageChange', pageNumbers.handleNumItemsChange);
-PubSub.subscribe('useCoupon', Coupons.useCoupon);
-PubSub.subscribe('invalidCouponEvent', Coupons.handleInvalidCoupon);
+    function initApp() {
+        initiateProducts();
+        initiateCoupons();
+        initEvents();
+        App.Store.drawProductsTable();
+    }
 
+    initApp();
 
-Store.drawProductsTable();
+}(App));

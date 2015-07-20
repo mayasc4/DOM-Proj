@@ -7,6 +7,11 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+
+        eslint: {
+            target: ['js/**/*.js']
+        },
+
         handlebars: {
             compile: {
                 options: {
@@ -35,8 +40,9 @@ module.exports = function (grunt) {
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-handlebars');
+    grunt.loadNpmTasks('grunt-eslint');
 
     // Default task(s).
-    grunt.registerTask('default', ['uglify', 'handlebars']);
+    grunt.registerTask('default', ['uglify', 'handlebars','eslint']);
 
 };

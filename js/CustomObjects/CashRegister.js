@@ -1,8 +1,12 @@
 /**
  * Created by mayasc on 7/15/15.
  */
+'use strict';
 
-var CashRegister = (function () {
+// dependency - Products, Coupons, PubSub
+
+App.CashRegister = (function () {
+
 
     var productsInCart = {};
     var totalCost = 0;
@@ -11,15 +15,17 @@ var CashRegister = (function () {
         var tempTotal = 0;
         var maxCost = 0;
         for (var productId in productsInCart) {
-            var product = Products.getProductById(productId);
-            var price  = product.onSale ? product.priceAfterSale : product.intPrice;
-            maxCost = maxCost < price ? price : maxCost;
-            tempTotal += price * productsInCart[productId];
+            if (productsInCart.hasOwnProperty(productId)) {
+                var product = App.Products.getProductById(productId);
+                var price = product.onSale ? product.priceAfterSale : product.intPrice;
+                maxCost = maxCost < price ? price : maxCost;
+                tempTotal += price * productsInCart[productId];
+            }
         }
         totalCost = tempTotal;
 
         if (couponCode) {
-            totalCost = Coupons.calcCouponDiscount(couponCode, totalCost, maxCost);
+            totalCost = App.Coupons.calcCouponDiscount(couponCode, totalCost, maxCost);
         }
         return totalCost;
     }
@@ -39,10 +45,10 @@ var CashRegister = (function () {
             } else {
                 productsInCart[productId] = 1;
             }
-            Products.reduceProductQuantity(productId);
+            App.Products.reduceProductQuantity(productId);
             calculateTotalCost();
-            PubSub.publish('drawStore');
-            PubSub.publish('drawCart');
+            App.PubSub.publish('drawStore');
+            App.PubSub.publish('drawCart');
         },
 
         removeProductFromCart: function (productId) {
@@ -50,14 +56,15 @@ var CashRegister = (function () {
             if (productsInCart[productId] === 0) {
                 delete productsInCart[productId];
             }
-            PubSub.publish('increaseProductQuantity', productId);
-            Products.increaseProductQuantity(productId);
+            App.PubSub.publish('increaseProductQuantity', productId);
+            App.Products.increaseProductQuantity(productId);
             calculateTotalCost();
-            PubSub.publish('drawStore');
+            App.PubSub.publish('drawStore');
+            App.PubSub.publish('drawCart');
         },
 
         getTotalCost: function () {
             return totalCost;
         }
-    }
-}());
+    };
+}(App));
