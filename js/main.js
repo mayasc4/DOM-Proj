@@ -8,16 +8,12 @@
 (function (App) {
 
     function initiateProducts() {
-        for (var item in App.ITEMS) {
-            if (App.ITEMS.hasOwnProperty(item)) {
-                if (item % 4 === 0) {
-                    App.Products.addProduct(App.ITEMS[item]);
-                    App.Products.setProductOnSale(App.ITEMS[item].id, true, 0.1);
-                } else {
-                    App.Products.addProduct(App.ITEMS[item]);
-                }
+        _.forEach(App.ITEMS, function(item){
+            App.Products.addProduct(item);
+            if ((item.id - 1) % 4 === 0) {
+                App.Products.setProductOnSale(item.id, true, 0.1);
             }
-        }
+        });
         App.Products.initiateProductsOrder();
     }
 

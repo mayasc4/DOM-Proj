@@ -27,21 +27,17 @@ App.PubSub = (function () {
         },
 
         publish: function (eType, data) {
-            for (var id in eventBus[eType]) {
-                if (eventBus[eType].hasOwnProperty(id)) {
-                    eventBus[eType][id](data);
-                }
-            }
+            _.forEach(_.keys(eventBus[eType]), function(id){
+                eventBus[eType][id](data);
+            });
         },
 
         unsubscribe: function (eType, id) {
-            for (var id_num in eventBus[eType]) {
-                if (eventBus[eType.hasOwnProperty(id)]) {
-                    if (id_num === id) {
-                        delete eventBus[eType][id];
-                    }
+            _.forEach(_.keys(eventBus[eType]), function(id_num) {
+                if (id_num === id) {
+                    delete eventBus[eType][id];
                 }
-            }
+            });
         }
     };
 }());

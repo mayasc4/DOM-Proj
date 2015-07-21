@@ -7,21 +7,19 @@
 
 App.CashRegister = (function () {
 
-
     var productsInCart = {};
     var totalCost = 0;
 
     function calculateTotalCost(couponCode) {
         var tempTotal = 0;
         var maxCost = 0;
-        for (var productId in productsInCart) {
-            if (productsInCart.hasOwnProperty(productId)) {
-                var product = App.Products.getProductById(productId);
-                var price = product.onSale ? product.priceAfterSale : product.intPrice;
-                maxCost = maxCost < price ? price : maxCost;
-                tempTotal += price * productsInCart[productId];
-            }
-        }
+        _.forEach(_.keys(productsInCart), function(productId){
+            var product = App.Products.getProductById(productId);
+            var price = product.onSale ? product.priceAfterSale : product.intPrice;
+            maxCost = maxCost < price ? price : maxCost;
+            tempTotal += price * productsInCart[productId];
+        });
+
         totalCost = tempTotal;
 
         if (couponCode) {

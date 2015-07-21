@@ -13,11 +13,9 @@ App.DOMUtils = (function () {
             var new_div = document.createElement(elementType);
             new_div.setAttribute('class', classText);
             new_div.textContent = content || '';
-            for (var attr in moreAttr) {
-                if (moreAttr.hasOwnProperty(attr)) {
-                    new_div.setAttribute(attr, moreAttr[attr]);
-                }
-            }
+            _.forEach(_.keys(moreAttr), function(attr) {
+                new_div.setAttribute(attr, moreAttr[attr]);
+            });
             return new_div;
         },
 
@@ -29,9 +27,9 @@ App.DOMUtils = (function () {
         removeChildren: function (parentQuery, childrenQuery) {
             var element = document.querySelector(parentQuery);
             var elementsToRemove = element.querySelectorAll(childrenQuery);
-            for (var i = 0; i < elementsToRemove.length; i++) {
-                element.removeChild(elementsToRemove[i]);
-            }
+            _.forEach(elementsToRemove, function(e) {
+                element.removeChild(e);
+            });
         }
     };
 
