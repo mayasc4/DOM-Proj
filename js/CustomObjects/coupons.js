@@ -1,10 +1,13 @@
 /**
  * Created by mayasc on 7/8/15.
  */
+'use strict';
+
+// dependencies - pubsub, domutils
 
 /* Coupons */
 
-var Coupons = (function () {
+App.Coupons = (function (App) {
 
     var allCoupons = {};
 
@@ -16,7 +19,6 @@ var Coupons = (function () {
     var DiscountCoupon = function (discountValue) {
         Coupon.call(this);
         this.discountValue = discountValue;
-        //this.type = 'discount';
     };
     DiscountCoupon.prototype = Object.create(Coupon.prototype);
     DiscountCoupon.prototype.constructor = DiscountCoupon;
@@ -24,7 +26,6 @@ var Coupons = (function () {
 
     var FreeCoupon = function () {
         Coupon.call(this);
-        //this.type = 'free';
     };
     FreeCoupon.prototype = Object.create(Coupon.prototype);
     FreeCoupon.prototype.constructor = FreeCoupon;
@@ -38,8 +39,8 @@ var Coupons = (function () {
             return allCoupons;
         },
 
-        addCoupon: function (cType, discountValue) {
-            var newCoupon = new cType(discountValue);
+        addCoupon: function (ConstructorType, discountValue) {
+            var newCoupon = new ConstructorType(discountValue);
             allCoupons[newCoupon.code] = newCoupon;
             return newCoupon.code;
         },
@@ -54,28 +55,27 @@ var Coupons = (function () {
             }
         },
 
-        useCoupon: function(code) {
-            if (Coupons.validateCoupon(code)) {
-                CashRegister.addCouponToCart(code);
-                PubSub.publish('drawCart');
+        useCoupon: function (code) {
+            if (App.Coupons.validateCoupon(code)) {
+                App.CashRegister.addCouponToCart(code);
+                App.PubSub.publish('drawCart');
             } else {
-                PubSub.publish('invalidCouponEvent');
+                App.PubSub.publish('invalidCouponEvent');
             }
         },
 
-        handleInvalidCoupon: function() {
-            DOMUtils.removeChildren('.table.cart', 'div.error');
+        handleInvalidCoupon: function () {
+            App.DOMUtils.removeChildren('.table.cart', 'div.error');
             var cart = document.querySelector('.table.cart');
-            cart.appendChild(DOMUtils.createNewElement('div','error','Invalid Coupon'));
+            cart.appendChild(App.DOMUtils.createNewElement('div', 'error', 'Invalid Coupon'));
         },
 
         calcCouponDiscount: function (couponCode, totalCost, maxCost) {
-            var coupon = Coupons.getCouponByCode(couponCode);
+            var coupon = App.Coupons.getCouponByCode(couponCode);
             if (coupon instanceof FreeCoupon) {
                 return totalCost - maxCost;
-            } else {
-                return totalCost * (1 - coupon.discountValue);
             }
+            return totalCost * (1 - coupon.discountValue);
         }
-    }
-}());
+    };
+}(App));

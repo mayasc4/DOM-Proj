@@ -1,10 +1,13 @@
 /**
  * Created by mayasc on 7/7/15.
  */
+'use strict';
+
+// dependencies - pubsub
 
 /* Products */
 
-var Products = (function () {
+App.Products = (function (App) {
 
     var allProducts = {};
     var productsOrder = [];
@@ -13,14 +16,13 @@ var Products = (function () {
         this.id = objectItem.id;
         this.name = objectItem.name;
         this.price = objectItem.price;
-        this.intPrice = parseInt(objectItem.price.replace('$', '').replace(',', ''));
+        this.intPrice = parseInt(objectItem.price.replace('$', '').replace(',', ''), 10);
         this.description = objectItem.description;
         this.image = objectItem.image;
         this.quantity = objectItem.quantity;
         this.onSale = false;
         this.priceAfterSale = 0;
     };
-
 
 
     return {
@@ -39,7 +41,7 @@ var Products = (function () {
         setProductOnSale: function (productId, setAs, precentSale) {
             allProducts[productId].onSale = setAs;
             if (setAs) {
-                allProducts[productId].priceAfterSale = (1-precentSale)*allProducts[productId].intPrice;
+                allProducts[productId].priceAfterSale = ((1 - precentSale) * allProducts[productId].intPrice).toFixed(2);
             }
         },
 
@@ -55,8 +57,8 @@ var Products = (function () {
             return allProducts[productId].quantity !== 0;
         },
 
-        initiateProductsOrder: function() {
-            productsOrder = Object.keys(Products.getAllProducts());
+        initiateProductsOrder: function () {
+            productsOrder = Object.keys(App.Products.getAllProducts());
         },
 
         getProductsOrder: function () {
@@ -66,12 +68,12 @@ var Products = (function () {
         sortProductsByProperty: function (field) {
             productsOrder.sort(function (a, b) {
                 // TODO Make this more efficient
-                var productA = Products.getProductById(a);
-                var productB = Products.getProductById(b);
+                var productA = App.Products.getProductById(a);
+                var productB = App.Products.getProductById(b);
                 return productA[field] > productB[field] ? 1 : -1;
             });
-            PubSub.publish('drawStore');
+            App.PubSub.publish('drawStore');
         }
-    }
-}());
+    };
+}(App));
 
