@@ -1,0 +1,6 @@
+.DS_Store
+.idea/
+js/.DS_Store
+node_modules/
+templates/.DS_Store
+templates/compiledTemplates.js
