@@ -7,7 +7,7 @@
 // dependencies - domutils, cashregister, products, pubsub
 
 /* Cart */
-define (['../CustomObjects/Products', '../CustomObjects/CashRegister', '../Utils/pubsub', '../Utils/DOMUtils'], function(Products, CashRegister, pubsub, DOMUtils) {
+define(['../CustomObjects/Products', '../CustomObjects/CashRegister', '../Utils/pubsub', '../Utils/DOMUtils'], function(Products, CashRegister, pubsub, DOMUtils) {
 
     function createCartFragment() {
         var cartContent = document.createDocumentFragment();

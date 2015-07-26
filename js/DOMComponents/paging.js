@@ -7,7 +7,7 @@
 
 /* Page Change */
 
-define (['../globals', '../DOMComponents/store', '../Utils/pubsub', '../Utils/DOMUtils'], function(globals, store, pubsub, DOMUtils) {
+define(['../globals', '../DOMComponents/store', '../Utils/pubsub', '../Utils/DOMUtils'], function(globals, store, pubsub, DOMUtils) {
 
     function drawNumbers() {
         // Remove Old Numbers
