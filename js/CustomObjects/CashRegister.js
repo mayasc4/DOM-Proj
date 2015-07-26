@@ -5,45 +5,95 @@
 
 // dependency - Products, Coupons, PubSub
 
-App.CashRegister = (function () {
-
+define(['./Products', './Coupons', '../Utils/pubsub'], function (Products, Coupons, pubsub) {
     var productsInCart = {};
     var totalCost = 0;
+    var allCoupons = {};
 
+    // Coupons
+    var generatedCode = 0;
+    var Coupon = function () {
+        this.code = generatedCode++;
+    };
+
+    var DiscountCoupon = function (discountValue) {
+        Coupon.call(this);
+        this.discountValue = discountValue;
+    };
+    DiscountCoupon.prototype = Object.create(Coupon.prototype);
+    DiscountCoupon.prototype.constructor = DiscountCoupon;
+
+
+    var FreeCoupon = function () {
+        Coupon.call(this);
+    };
+    FreeCoupon.prototype = Object.create(Coupon.prototype);
+    FreeCoupon.prototype.constructor = FreeCoupon;
+
+    function validateCoupon (code) {
+        if (allCoupons[code]) {
+            return true;
+        }
+    }
+
+    // Cash Register
     function calculateTotalCost(couponCode) {
-        var tempTotal = 0;
-        var maxCost = 0;
-
         // TODO make this more pretty
 
-        var productElements = _.filter(App.Products.getAllProducts(), function(product) {
-            var retVal = _.includes(Object.keys(productsInCart), product.id.toString());
-            return retVal;
+        var productElements = _.filter(Products.getAllProducts(), function (product) {
+            return _.includes(Object.keys(productsInCart), product.id.toString());
         });
 
 
-        tempTotal = _.reduce(productElements, function(acc, curr) {
-            var price = curr.onSale ? curr.priceAfterSale : curr.intPrice;
+        totalCost = _.reduce(productElements, function (acc, curr) {
+            //var price = curr.onSale ? curr.priceAfterSale : curr.intPrice;
+            var price = curr.priceAfterSale;
             return acc + ( price * productsInCart[curr.id]);
         }, 0);
 
-        maxCost = _.max(_.pluck(productElements, 'intPrice'));
-
-        totalCost = tempTotal;
+        var maxCost = _.max(_.pluck(productElements, 'priceAfterSale'));
 
         if (couponCode) {
-            totalCost = App.Coupons.calcCouponDiscount(couponCode, totalCost, maxCost);
+            var coupon = allCoupons[couponCode];
+            if (coupon instanceof FreeCoupon) {
+                totalCost = totalCost - maxCost;
+            } else {
+                totalCost = totalCost * (1 - coupon.discountValue);
+            }
         }
         return totalCost;
     }
 
     return {
-        getProductsInCart: function () {
-            return productsInCart;
+        FreeCoupon: FreeCoupon,
+
+        DiscountCoupon: DiscountCoupon,
+
+        getAllCoupons: function () {
+            return allCoupons;
         },
 
-        addCouponToCart: function (couponCode) {
-            calculateTotalCost(couponCode);
+        addCoupon: function (ConstructorType, discountValue) {
+            var newCoupon = new ConstructorType(discountValue);
+            allCoupons[newCoupon.code] = newCoupon;
+            return newCoupon.code;
+        },
+
+        getCouponByCode: function (code) {
+            return allCoupons[code];
+        },
+
+        useCoupon: function (code) {
+            if (validateCoupon(code)) {
+                calculateTotalCost(code);
+                pubsub.publish('drawCart');
+            } else {
+                pubsub.publish('invalidCouponEvent');
+            }
+        },
+
+        getProductsInCart: function () {
+            return productsInCart;
         },
 
         addProductToCart: function (productId) {
@@ -52,10 +102,10 @@ App.CashRegister = (function () {
             } else {
                 productsInCart[productId] = 1;
             }
-            App.Products.reduceProductQuantity(productId);
+            Products.reduceProductQuantity(productId);
             calculateTotalCost();
-            App.PubSub.publish('drawStore');
-            App.PubSub.publish('drawCart');
+            pubsub.publish('drawStore');
+            pubsub.publish('drawCart');
         },
 
         removeProductFromCart: function (productId) {
@@ -63,15 +113,16 @@ App.CashRegister = (function () {
             if (productsInCart[productId] === 0) {
                 delete productsInCart[productId];
             }
-            App.PubSub.publish('increaseProductQuantity', productId);
-            App.Products.increaseProductQuantity(productId);
+            pubsub.publish('increaseProductQuantity', productId);
+            Products.increaseProductQuantity(productId);
             calculateTotalCost();
-            App.PubSub.publish('drawStore');
-            App.PubSub.publish('drawCart');
+            pubsub.publish('drawStore');
+            pubsub.publish('drawCart');
         },
 
         getTotalCost: function () {
             return totalCost;
         }
     };
-}(App));
+});
+

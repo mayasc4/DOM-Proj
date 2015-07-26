@@ -5,8 +5,7 @@
 
 // dependencies - none
 
-
-App.DOMUtils = (function () {
+define([], function() {
 
     return {
         createNewElement: function (elementType, classText, content, moreAttr) {
@@ -33,4 +32,4 @@ App.DOMUtils = (function () {
         }
     };
 
-}());
+});

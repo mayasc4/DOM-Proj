@@ -11,6 +11,7 @@
   },
   "globals": {
     "App": true,
-    "JST": true
+    "JST": true,
+    "_": true
   }
 }

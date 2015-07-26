@@ -5,9 +5,8 @@
 
 //dependencies - none
 
-//var App = App || {};
-
-App.PubSub = (function () {
+define([], function() {
+//App.PubSub = (function () {
     var eventBus = {
 
         // internal counter for id
@@ -38,6 +37,12 @@ App.PubSub = (function () {
                     delete eventBus[eType][id];
                 }
             });
+        },
+
+        getEvents: function(){
+            return eventBus;
         }
     };
-}());
+//}());
+
+});

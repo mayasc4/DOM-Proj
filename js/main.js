@@ -5,47 +5,48 @@
 
 /* MAIN */
 
-(function (App) {
+requirejs(['./globals', 'CustomObjects/CashRegister', 'CustomObjects/Coupons', 'CustomObjects/Products', 'DOMComponents/cart', 'DOMComponents/paging',
+        'DOMComponents/store', 'Utils/pubsub'],
+    function (globals, CashRegister, CashRegisterCoupons, Products, cart, paging, store, pubsub) {
 
-    function initiateProducts() {
-        _.forEach(App.ITEMS, function(item){
-            App.Products.addProduct(item);
-            if ((item.id - 1) % 4 === 0) {
-                App.Products.setProductOnSale(item.id, true, 0.1);
-            }
-        });
-        App.Products.initiateProductsOrder();
-    }
+        function initiateProducts() {
+            _.forEach(globals.ITEMS, function (item) {
+                Products.addProduct(item);
+                if ((item.id - 1) % 4 === 0) {
+                    Products.setProductOnSale(item.id, true, 0.1);
+                }
+            });
+            Products.initiateProductsOrder();
+        }
 
-    function initiateCoupons() {
-        App.Coupons.addCoupon(App.Coupons.FreeCoupon);
-        App.Coupons.addCoupon(App.Coupons.FreeCoupon);
-        App.Coupons.addCoupon(App.Coupons.DiscountCoupon, 0.05);
-        App.Coupons.addCoupon(App.Coupons.FreeCoupon);
-        App.Coupons.addCoupon(App.Coupons.DiscountCoupon, 0.1);
-    }
+        function initiateCoupons() {
+            CashRegister.addCoupon(CashRegister.FreeCoupon);
+            CashRegister.addCoupon(CashRegister.FreeCoupon);
+            CashRegister.addCoupon(CashRegister.DiscountCoupon, 0.05);
+            CashRegister.addCoupon(CashRegister.FreeCoupon);
+            CashRegister.addCoupon(CashRegister.DiscountCoupon, 0.1);
+        }
 
 
-    function initEvents() {
-        App.PubSub.subscribe('drawCart', App.Cart.drawCart);
-        App.PubSub.subscribe('drawStore', App.Store.drawProductsTable);
+        function initEvents() {
+            pubsub.subscribe('drawCart', cart.drawCart);
+            pubsub.subscribe('drawStore', store.drawProductsTable);
 
-        App.PubSub.subscribe('addItem', App.CashRegister.addProductToCart);
-        App.PubSub.subscribe('removeItem', App.CashRegister.removeProductFromCart);
-        App.PubSub.subscribe('sortEvent', App.Products.sortProductsByProperty);
-        App.PubSub.subscribe('pageChange', App.pageNumbers.handlePageChange);
-        App.PubSub.subscribe('numItemsPerPageChange', App.pageNumbers.handleNumItemsChange);
-        App.PubSub.subscribe('useCoupon', App.Coupons.useCoupon);
-        App.PubSub.subscribe('invalidCouponEvent', App.Coupons.handleInvalidCoupon);
-    }
+            pubsub.subscribe('addItem', CashRegister.addProductToCart);
+            pubsub.subscribe('removeItem', CashRegister.removeProductFromCart);
+            pubsub.subscribe('sortEvent', Products.sortProductsByProperty);
+            pubsub.subscribe('pageChange', paging.handlePageChange);
+            pubsub.subscribe('numItemsPerPageChange', paging.handleNumItemsChange);
+            pubsub.subscribe('useCoupon', CashRegister.useCoupon);
+            pubsub.subscribe('invalidCouponEvent', cart.handleInvalidCoupon);
+        }
 
-    function initApp() {
-        initiateProducts();
-        initiateCoupons();
-        initEvents();
-        App.Store.drawProductsTable();
-    }
+        function initApp() {
+            initiateProducts();
+            initiateCoupons();
+            initEvents();
+            store.drawProductsTable();
+        }
 
-    initApp();
-
-}(App));
+        initApp();
+    });
